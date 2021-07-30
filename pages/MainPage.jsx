@@ -1,19 +1,28 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Image, View, TouchableOpacity, Text } from 'react-native';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { Container, Header, Content, Left, Right } from 'native-base';
 import HeaderComponent from '../components/HeaderComponent';
 import CardComponent from '../components/CardComponent';
-import data from '../data.json';
+import { getData } from '../config/firebaseFunctions';
+
 import { Entypo } from '@expo/vector-icons';
 import * as Animatable from 'react-native-animatable';
 
 export default function MainPage({ navigation }) {
+  const [data, setData] = useState([]);
   useEffect(() => {
     navigation.addListener('beforeRemove', (e) => {
       e.preventDefault();
     });
+    readyData();
   }, []);
+
+  const readyData = async () => {
+    const data = await getData();
+    setData(data);
+  };
+
   return (
     <Container>
       <HeaderComponent />
@@ -39,11 +48,11 @@ export default function MainPage({ navigation }) {
           <Text style={{ color: 'grey' }}>FROM THE DIARY</Text>
         </Grid>
         <View style={{ marginTop: -20 }}>
-          {data.diary.map((content) => {
+          {data.map((content) => {
             return (
               <CardComponent
                 content={content}
-                key={content.id}
+                key={content.date}
                 navigation={navigation}
               />
             );

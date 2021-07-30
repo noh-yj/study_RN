@@ -9,6 +9,7 @@ import { Container, Content, Form, Item, Input, Label } from 'native-base';
 import ItemInput from '../components/ItemInput';
 import { signIn } from '../config/firebaseFunctions';
 import Loading from './Loading';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const bImage = require('../assets/background.png');
 
 export default function SignInPage({ navigation }) {
@@ -18,6 +19,14 @@ export default function SignInPage({ navigation }) {
       e.preventDefault();
     });
     setTimeout(() => {
+      AsyncStorage.getItem('session', (err, result) => {
+        console.log('ASYNCSTORAGE', result);
+        if (result) {
+          navigation.push('TabNavigator');
+        } else {
+          setReady(true);
+        }
+      });
       setReady(true);
     }, 1000);
   }, []);
