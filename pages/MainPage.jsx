@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, Image, View, TouchableOpacity, Text } from 'react-native';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { Container, Header, Content, Left, Right } from 'native-base';
@@ -9,6 +9,11 @@ import { Entypo } from '@expo/vector-icons';
 import * as Animatable from 'react-native-animatable';
 
 export default function MainPage({ navigation }) {
+  useEffect(() => {
+    navigation.addListener('beforeRemove', (e) => {
+      e.preventDefault();
+    });
+  }, []);
   return (
     <Container>
       <HeaderComponent />

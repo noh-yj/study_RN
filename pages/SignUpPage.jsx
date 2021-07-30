@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   ImageBackground,
@@ -19,11 +19,62 @@ import {
   Right,
 } from 'native-base';
 import { AntDesign } from '@expo/vector-icons';
+import { registration } from '../config/firebaseFunctions';
 
 const bImage = require('../assets/background.png');
 import ItemInput from '../components/ItemInput';
 
 export default function SignUpPage({ navigation }) {
+  const [nickName, setNickName] = useState('');
+  const [nickNameError, setNickNameError] = useState('');
+
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
+
+  const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
+  const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [passwordConfirmError, setPasswordConfirmError] = useState('');
+
+  const doSignUp = () => {
+    if (nickName == '') {
+      setNickNameError('닉네임을 입력해주세요');
+      return;
+    } else {
+      setNickNameError('');
+    }
+
+    if (email == '') {
+      setEmailError('이메일을 입력해주세요');
+      return false;
+    } else {
+      setEmailError('');
+    }
+
+    if (password == '') {
+      setPasswordError('비밀번호를 입력해주세요');
+      return false;
+    } else {
+      setPasswordError('');
+    }
+
+    if (passwordConfirm == '') {
+      setPasswordConfirmError('비밀번호 확인을 입력해주세요');
+      return false;
+    } else {
+      setPasswordConfirmError('');
+    }
+
+    if (password !== passwordConfirm) {
+      setPasswordConfirmError('비밀번호가 서로 일치 하지 않습니다.');
+      return false;
+    } else {
+      setPasswordConfirmError('');
+    }
+    registration(nickName, email, password, navigation);
+  };
+
   return (
     <Container style={styles.container}>
       <ImageBackground style={styles.backgroundImage} source={bImage}>
@@ -46,13 +97,33 @@ export default function SignUpPage({ navigation }) {
               <Text style={styles.highlite}>we</Text>gram signup
             </Text>
             <Form style={styles.form}>
-              <ItemInput title={'닉네임'} />
-              <ItemInput title={'이메일'} />
-              <ItemInput title={'비밀번호'} />
-              <ItemInput title={'비밀번호 확인'} />
+              <ItemInput
+                title={'닉네임'}
+                type={'nickName'}
+                error={nickNameError}
+                setFunc={setNickName}
+              />
+              <ItemInput
+                title={'이메일'}
+                type={'email'}
+                error={emailError}
+                setFunc={setEmail}
+              />
+              <ItemInput
+                title={'비밀번호'}
+                type={'password'}
+                error={passwordError}
+                setFunc={setPassword}
+              />
+              <ItemInput
+                title={'비밀번호 확인'}
+                type={'password'}
+                error={passwordConfirmError}
+                setFunc={setPasswordConfirm}
+              />
             </Form>
-            <TouchableOpacity style={styles.emailSignUp}>
-              <Text>등록</Text>
+            <TouchableOpacity style={styles.emailSignUp} onPress={doSignUp}>
+              <Text style={{ color: '#fff' }}>등록</Text>
             </TouchableOpacity>
           </View>
         </Content>

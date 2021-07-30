@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   ImageBackground,
@@ -7,13 +7,54 @@ import {
 } from 'react-native';
 import { Container, Content, Form, Item, Input, Label } from 'native-base';
 import ItemInput from '../components/ItemInput';
+import { signIn } from '../config/firebaseFunctions';
+import Loading from './Loading';
 const bImage = require('../assets/background.png');
 
 export default function SignInPage({ navigation }) {
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    navigation.addListener('beforeRemove', (e) => {
+      e.preventDefault();
+    });
+    setTimeout(() => {
+      setReady(true);
+    }, 1000);
+  }, []);
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
   const goSignUp = () => {
     navigation.navigate('SignUpPage');
   };
-  return (
+
+  const doSignIn = () => {
+    if (email === '') {
+      setEmailError('이메일을 입력해주세요');
+    } else {
+      setEmailError('');
+    }
+
+    if (password == '') {
+      setPasswordError('비밀번호를 입력해주세요');
+    } else {
+      setPasswordError('');
+    }
+    signIn(email, password, navigation);
+  };
+
+  const setEmailFunc = (itemInputEmail) => {
+    setEmail(itemInputEmail);
+  };
+  const setPasswordFunc = (itemInputPassword) => {
+    setPassword(itemInputPassword);
+  };
+
+  return ready ? (
     <Container style={styles.container}>
       <ImageBackground source={bImage} style={styles.backgroundImage}>
         <Content contentContainerStyle={styles.content} scrollEnabled={false}>
@@ -21,14 +62,24 @@ export default function SignInPage({ navigation }) {
             <Text style={styles.highlite}>we</Text>gram
           </Text>
           <Form style={styles.form}>
-            <ItemInput title={'이메일'} />
-            <ItemInput title={'비밀번호'} />
+            <ItemInput
+              title={'이메일'}
+              type={'email'}
+              setFunc={setEmailFunc}
+              error={emailError}
+            />
+            <ItemInput
+              title={'비밀번호'}
+              type={'password'}
+              setFunc={setPasswordFunc}
+              error={passwordError}
+            />
           </Form>
 
           {/* <Button style={styles.snsSignUp}>
             <Text>Facebook 로그인</Text>
           </Button> */}
-          <TouchableOpacity style={styles.emailSignIn}>
+          <TouchableOpacity style={styles.emailSignIn} onPress={doSignIn}>
             <Text
               style={{
                 color: '#fff',
@@ -49,6 +100,8 @@ export default function SignInPage({ navigation }) {
         </Content>
       </ImageBackground>
     </Container>
+  ) : (
+    <Loading />
   );
 }
 

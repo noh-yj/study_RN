@@ -8,11 +8,10 @@ import ImageBlurLoading from 'react-native-image-blur-loading';
 import { AntDesign } from '@expo/vector-icons';
 
 function CardComponent({ navigation, content }) {
-  console.log(content);
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate('DetailPage');
+        navigation.navigate('DetailPage', { content: content });
       }}
       style={styles.container}
     >
