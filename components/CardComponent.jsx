@@ -70,7 +70,7 @@ function CardComponent({ navigation, content }) {
                   <AntDesign
                     name="hearto"
                     size={24}
-                    color={content.like === true ? 'pink' : 'grey'}
+                    color={like ? 'pink' : 'grey'}
                     onPress={likeFunc}
                   />
                 </Col>
