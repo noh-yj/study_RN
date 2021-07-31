@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { Icon, Text, Card, CardItem } from 'native-base';
@@ -7,7 +7,36 @@ const logo = require('../assets/logo.png');
 import ImageBlurLoading from 'react-native-image-blur-loading';
 import { AntDesign } from '@expo/vector-icons';
 
+import * as firebase from 'firebase';
+import 'firebase/firestore';
+import { doLike } from '../config/firebaseFunctions';
+
 function CardComponent({ navigation, content }) {
+  const [like, setLike] = useState(false);
+
+  useEffect(() => {
+    if (content.like) {
+      setLike(true);
+    } else {
+      setLike(false);
+    }
+  }, []);
+
+  const likeFunc = () => {
+    const currentUser = firebase.auth().currentUser;
+    const uid = currentUser.uid;
+    const did = content.date + 'D';
+    let result = doLike(uid, did, like);
+    if (result) {
+      console.log('like');
+      if (like) {
+        setLike(false);
+      } else {
+        setLike(true);
+      }
+    }
+  };
+
   return (
     <TouchableOpacity
       onPress={() => {
@@ -38,7 +67,12 @@ function CardComponent({ navigation, content }) {
                   <AntDesign name="message1" size={24} color="grey" />
                 </Col>
                 <Col>
-                  <AntDesign name="hearto" size={24} color="grey" />
+                  <AntDesign
+                    name="hearto"
+                    size={24}
+                    color={content.like === true ? 'pink' : 'grey'}
+                    onPress={likeFunc}
+                  />
                 </Col>
               </Grid>
             </Col>
